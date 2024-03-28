@@ -20,6 +20,12 @@ const CoursePage: React.FC<Props> = ({ searchParams }: Props) => {
   const idString = searchPar.get("id");
   const prefix = searchPar.get("prefix");
 
+
+
+
+
+
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -29,7 +35,6 @@ const CoursePage: React.FC<Props> = ({ searchParams }: Props) => {
           .select('*')
           .eq('id', +idString!)
           .single();
-        console.log(data);
         setCourse(data!);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -40,6 +45,10 @@ const CoursePage: React.FC<Props> = ({ searchParams }: Props) => {
       fetchProduct();
     }
   }, [idString, prefix]);
+
+
+
+
 
   const dispatch = useDispatch();
 

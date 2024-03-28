@@ -1,8 +1,13 @@
 import Container from "@/components/Container";
 import Courses from "@/components/Courses";
+import supabase from "@/supabase/config";
 import { Book } from "lucide-react";
 import React from "react";
 const page = async () => {
+
+
+
+
   return (
     <div className="pt-7">
       <div className="border-b border-gray-400 pb-4 px-3 relative flex items-center justify-between">

@@ -9,6 +9,8 @@ import { Printer, Trash } from "lucide-react";
 import Bill from "@/components/Bill";
 import { ProductType } from "../../../../type";
 import supabase from "@/supabase/config";
+import { getCustomerCourses } from "@/supabase/getCustomerCourses";
+import { Cousine } from "next/font/google";
 const CustomerPage = () => {
   const router = useRouter();
   const searchPar = useSearchParams();
@@ -75,35 +77,74 @@ const CustomerPage = () => {
     toast.success("When you're ready, please click CTRL + P to print.");
   };
 
-
   useEffect(() => {
-    async function fetchCustomerData() {
+    async function fetchData() {
       try {
-        const { data, error } = await supabase
-          .from('customers')
-          .select('*')
-          .eq('id', +customerId!)
-          .single();
-
-        if (error) {
-          throw error;
-        }
-
-        setCustomerData(data);
+        const courses = await getCustomerCourses("bba739b3-09e0-4986-a57d-d04d44813f61");
+        console.log(courses);
       } catch (error) {
-        console.error('Error fetching customer data:', (error as Error).message);
+        console.error('Error fetching customer courses:', error);
       }
     }
-
-    fetchCustomerData();
-  }, [customerId]);
-
+  
+    fetchData();
+  }, []);
 
   const setBill = () => {
     const confirm = window.confirm('Sure To Reset Bill ?');
     if (!confirm) return;
     setBillData([])
   }
+
+
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        // Fetch customer purchases data
+        const { data: purchases, error } = await supabase
+          .from('customer_purchures')
+          .select('*')
+          .eq('customer_id', `bba739b3-09e0-4986-a57d-d04d44813f61`);
+
+
+        console.log(purchases)
+
+        // if (error) {
+        //   throw error;
+        // }
+
+        // Extract course IDs from purchases
+        // const courseIds = purchases.map(purchase => purchase.course_id);
+
+        // // Fetch course details based on course IDs
+        // const { data: coursesData, error: coursesError } = await supabase
+        //   .from('courses_duplicate')
+        //   .select('*')
+        //   .in('course_id', courseIds);
+
+        // if (coursesError) {
+        //   throw coursesError;
+        // }
+        // console.log(coursesData)
+
+        // setCourses(coursesData);
+      } catch (error) {
+        console.error('Error fetching data:', (error as Error).message);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
+
+
+
+
+
+
+
+
 
   return (
     <div className="m-8">

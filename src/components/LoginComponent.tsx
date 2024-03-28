@@ -1,7 +1,7 @@
 import { addUser } from "@/redux/proSlice";
 import { Key } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import supabase from "@/supabase/config";
 const LoginComponent = () => {
@@ -80,6 +80,10 @@ const LoginComponent = () => {
       }
     }
   };
+
+
+
+
 
   return (
     <div className="relative py-3 w-full">
