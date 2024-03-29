@@ -79,6 +79,17 @@ const CustomerPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
+        const customerData = await supabase.from('customers_duplicate').select("*").eq('id', customerId).single()
+        return customerData
+      } catch (error) {
+        console.error('Error fetching customer courses:', error);
+      }
+    }
+    fetchData().then(data => setCustomerData(data!));
+  }, []);
+  useEffect(() => {
+    async function fetchData() {
+      try {
         const courses = await getCustomerOrders(customerId, 'service_id', 'services_duplicate');
         return courses
       } catch (error) {
@@ -87,7 +98,6 @@ const CustomerPage = () => {
     }
     fetchData().then(data => console.log(data));
   }, []);
-
   const setBill = () => {
     const confirm = window.confirm('Sure To Reset Bill ?');
     if (!confirm) return;
