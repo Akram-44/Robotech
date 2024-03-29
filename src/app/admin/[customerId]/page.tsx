@@ -6,6 +6,7 @@ import Bill from "@/components/Bill";
 import { ProductType } from "../../../../type";
 import supabase from "@/supabase/config";
 import Orders from "@/components/customer/orders";
+import PlaceOrder from "@/components/customer/placeOrder";
 
 const CustomerPage = () => {
   const searchPar = useSearchParams();
@@ -43,7 +44,7 @@ const CustomerPage = () => {
       label: "Orders",
     },
     {
-      content: "Placeholder",
+      content: <PlaceOrder />,
       label: "Place Order",
     },
     {
