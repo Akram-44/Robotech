@@ -6,7 +6,7 @@ import Bill from "@/components/Bill";
 import { ProductType } from "../../../../type";
 import supabase from "@/supabase/config";
 import Orders from "@/components/customer/orders";
-import PlaceOrder from "@/components/customer/placeOrder";
+import OrderModel from "@/components/orderModel";
 
 const CustomerPage = () => {
   const searchPar = useSearchParams();
@@ -17,6 +17,7 @@ const CustomerPage = () => {
   const [currentBillId, setCurrentBillId] = useState(0);
   const [billData, setBillData] = useState<any>([]);
   const [showBill, setShowBill] = useState(false);
+  const [showPlaceOrderModel, setShowPlaceOrderModel] = useState(false);
   const [showOrders, setShowOrders] = useState(false);
   const [showOrderModel, setShowOrderModel] = useState(false);
   const [currentBill, setCurrentBill] = useState<BillType>();
@@ -42,10 +43,6 @@ const CustomerPage = () => {
     {
       content: <Orders customerId={customerId} />,
       label: "Orders",
-    },
-    {
-      content: <PlaceOrder />,
-      label: "Place Order",
     },
     {
       content: "Placeholder 2",
@@ -116,10 +113,12 @@ const CustomerPage = () => {
             {tabs.map((tab, index) => (
               <button className="bg-blue-500 text-white px-10 py-2 rounded mr-2 font-medium hover:bg-blue-600" type="button" key={index} onClick={() => setCurrentTab(index)}>{tab.label}</button>
             ))}
+            <button className="bg-blue-500 ml-auto text-white px-10 py-2 rounded mr-2 font-medium hover:bg-blue-600" type="button" onClick={() => null}>Place Order</button>
           </div>
           <div className="h-[400px] border overflow-auto rounded mt-3 p-3">{tabs[currentTab].content}</div>
         </div>
       )}
+      {showPlaceOrderModel && <OrderModel />}
       {showBill && <Bill id={currentBillId} setBillData={setBillData} setShowBill={setShowBill} transactionData={billData} />}
     </div>
   );

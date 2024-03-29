@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import FormattedPrice from "./FormattedPrice";
-import { CourseType, ProductType } from "../../type";
-import { fetchJsonData } from "@/helpers/getJSONData";
+import { CourseType, ProductType } from "./../../type";
 import supabase from "@/supabase/config";
 
 const CustomSelect = ({
@@ -95,13 +94,7 @@ const CustomSelect = ({
   );
 };
 
-const OrderModel = ({
-  newOrder,
-  setNewOrder,
-  handleAddOrder,
-  setShowAddOrderModal,
-  list,
-}) => {
+const OrderModel = () => {
   const [selectedItem, setSelectedItem] = useState<
     CourseType | ProductType | null
   >(null);
@@ -122,101 +115,101 @@ const OrderModel = ({
   }, []);
 
   // Calculate subtotal whenever selectedItem or newOrder changes
-  useEffect(() => {
-    if (selectedItem && +newOrder.quantity >= 0 && +newOrder.discount >= 0) {
-      const subtotal =
-        +selectedItem.price * +newOrder.quantity - +newOrder.discount;
-      setNewOrder({ ...newOrder, subtotal });
-    }
-  }, [selectedItem, newOrder.quantity, newOrder.discount, setNewOrder]);
+  // useEffect(() => {
+  //     if (selectedItem && +newOrder.quantity >= 0 && +newOrder.discount >= 0) {
+  //         const subtotal =
+  //             +selectedItem.price * +newOrder.quantity - +newOrder.discount;
+  //         setNewOrder({ ...newOrder, subtotal });
+  //     }
+  // }, [selectedItem, newOrder.quantity, newOrder.discount, setNewOrder]);
 
-  const handleSelect = (option) => {
-    setSelectedItem(option);
-    setNewOrder({
-      ...newOrder,
-      productId: option?.id,
-      productName: option.title,
-      productCategory: option?.category || "",
-      piecePrice: +option.price,
-      discount: +option.discount || 0,
-      wholesalePrice: +option.wholesalePrice || 0,
-      isRefund: false,
-      date: new Date().toLocaleDateString("en-US", {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    });
-  };
+  // const handleSelect = (option) => {
+  //     setSelectedItem(option);
+  //     setNewOrder({
+  //         ...newOrder,
+  //         productId: option?.id,
+  //         productName: option.title,
+  //         productCategory: option?.category || "",
+  //         piecePrice: +option.price,
+  //         discount: +option.discount || 0,
+  //         wholesalePrice: +option.wholesalePrice || 0,
+  //         isRefund: false,
+  //         date: new Date().toLocaleDateString("en-US", {
+  //             weekday: "short",
+  //             year: "numeric",
+  //             month: "short",
+  //             day: "2-digit",
+  //             hour: "2-digit",
+  //             minute: "2-digit",
+  //         }),
+  //     });
+  // };
 
-  const handleAddOrderClick = async () => {
-    // Validate selected product
-    if (!selectedItem) {
-      toast.error("Please select a product");
-      return;
-    }
-    if (newOrder.quantity <= 0) {
-      toast.error("Quantity should be greater than zero");
-      return;
-    }
-    console.log(selectedItem);
-    if ("count" in selectedItem!) {
-      if (newOrder.quantity > selectedItem.count) {
-        toast.error(`only ${selectedItem.count} piece(s) available in-stock`);
-        return;
-      }else{
-        const newStock = selectedItem.count - newOrder.quantity;
-        console.log('selected product stock',selectedItem.count)
-        console.log('new order quantity',newOrder.quantity)
-        console.log('new stock',newStock)
-        await supabase
-            .from('products')
-            .update({ 'count': newStock })
-            .eq('id', selectedItem.id); 
-      }
-    }
+  // const handleAddOrderClick = async () => {
+  //     // Validate selected product
+  //     if (!selectedItem) {
+  //         toast.error("Please select a product");
+  //         return;
+  //     }
+  //     if (newOrder.quantity <= 0) {
+  //         toast.error("Quantity should be greater than zero");
+  //         return;
+  //     }
+  //     console.log(selectedItem);
+  //     if ("count" in selectedItem!) {
+  //         if (newOrder.quantity > selectedItem.count) {
+  //             toast.error(`only ${selectedItem.count} piece(s) available in-stock`);
+  //             return;
+  //         } else {
+  //             const newStock = selectedItem.count - newOrder.quantity;
+  //             console.log('selected product stock', selectedItem.count)
+  //             console.log('new order quantity', newOrder.quantity)
+  //             console.log('new stock', newStock)
+  //             await supabase
+  //                 .from('products')
+  //                 .update({ 'count': newStock })
+  //                 .eq('id', selectedItem.id);
+  //         }
+  //     }
 
-    // if ("count" in selectedItem!) {
-    //   // Access the count property only when the selectedItem is of type ProductType
-    //   const itemCount = +selectedItem.count;
-    //   if (newOrder.quantity > itemCount) {
-    //     toast.error(`only ${itemCount} piece(s) available in-stock`);
-    //     return;
-    //   } else {
-    //     let obj = categoriesList[0][selectedItem.category].find(
-    //       (product) => product.id === selectedItem.id
-    //     );
-    //     let updatedObject = {
-    //       ...obj,
-    //       count: `${+selectedItem?.count - +newOrder?.quantity}`,
-    //     };
-    //     const updatedProducts = categoriesList[0][selectedItem.category].map(
-    //       (product) => {
-    //         if (product.id === selectedItem.id) {
-    //           return updatedObject;
-    //         }
-    //         return product;
-    //       }
-    //     );
+  //     // if ("count" in selectedItem!) {
+  //     //   // Access the count property only when the selectedItem is of type ProductType
+  //     //   const itemCount = +selectedItem.count;
+  //     //   if (newOrder.quantity > itemCount) {
+  //     //     toast.error(`only ${itemCount} piece(s) available in-stock`);
+  //     //     return;
+  //     //   } else {
+  //     //     let obj = categoriesList[0][selectedItem.category].find(
+  //     //       (product) => product.id === selectedItem.id
+  //     //     );
+  //     //     let updatedObject = {
+  //     //       ...obj,
+  //     //       count: `${+selectedItem?.count - +newOrder?.quantity}`,
+  //     //     };
+  //     //     const updatedProducts = categoriesList[0][selectedItem.category].map(
+  //     //       (product) => {
+  //     //         if (product.id === selectedItem.id) {
+  //     //           return updatedObject;
+  //     //         }
+  //     //         return product;
+  //     //       }
+  //     //     );
 
-    //     // Update the correct object within the categoriesList array
-    //     const updatedCategoriesList = [...categoriesList]; // Copy the original array
-    //     updatedCategoriesList[0][selectedItem.category] = updatedProducts; // Update the correct category array
+  //     //     // Update the correct object within the categoriesList array
+  //     //     const updatedCategoriesList = [...categoriesList]; // Copy the original array
+  //     //     updatedCategoriesList[0][selectedItem.category] = updatedProducts; // Update the correct category array
 
-    //     setCategoriesList(updatedCategoriesList); // Update the state with the updated array
-    //   }
-    // }
+  //     //     setCategoriesList(updatedCategoriesList); // Update the state with the updated array
+  //     //   }
+  //     // }
 
-    // Proceed with adding order
-    handleAddOrder(newOrder.productId);
-  };
+  //     // Proceed with adding order
+  //     handleAddOrder(newOrder.productId);
+  // };
 
   return (
     <>
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-100 flex items-center justify-center">
+      <div className=" inset-0 bg-black bg-opacity-50 z-100 flex items-center justify-center">
         <div className="bg-white min-w-[40rem] p-8 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Add Order</h2>
           <form>
@@ -224,13 +217,13 @@ const OrderModel = ({
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Product Name
               </label>
-              <CustomSelect
-                setSelectedItem={setSelectedItem}
-                setNewOrder={setNewOrder}
-                newOrder={newOrder}
-                options={list}
-                onSelect={handleSelect}
-              />
+              {/* <CustomSelect
+                                setSelectedItem={setSelectedItem}
+                                setNewOrder={setNewOrder}
+                                newOrder={newOrder}
+                                options={list}
+                                onSelect={handleSelect}
+                            /> */}
             </div>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -239,13 +232,13 @@ const OrderModel = ({
               <input
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded"
-                value={newOrder.quantity || 1}
-                onChange={(e) =>
-                  setNewOrder({
-                    ...newOrder,
-                    quantity: parseInt(e.target.value, 10),
-                  })
-                }
+              // value={newOrder.quantity || 1}
+              // onChange={(e) =>
+              //     setNewOrder({
+              //         ...newOrder,
+              //         quantity: parseInt(e.target.value, 10),
+              //     })
+              // }
               />
             </div>
 
@@ -254,11 +247,11 @@ const OrderModel = ({
                 Price
               </label>
               <div className="w-full p-2 border border-gray-300 rounded">
-                <FormattedPrice
-                  amount={
-                    (selectedItem?.price! || 0) * (newOrder?.quantity || 1)
-                  }
-                />
+                {/* <FormattedPrice
+                                    // amount={
+                                    //     (selectedItem?.price! || 0) * (newOrder?.quantity || 1)
+                                    // }
+                                /> */}
               </div>
             </div>
             <div className="mb-4">
@@ -268,15 +261,15 @@ const OrderModel = ({
               <input
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded"
-                value={newOrder.discount}
-                onChange={(e) =>
-                  setNewOrder({
-                    ...newOrder,
-                    discount: isNaN(parseInt(e.target.value, 10))
-                      ? 0
-                      : parseInt(e.target.value, 10),
-                  })
-                }
+              // value={newOrder.discount}
+              // onChange={(e) =>
+              //     setNewOrder({
+              //         ...newOrder,
+              //         discount: isNaN(parseInt(e.target.value, 10))
+              //             ? 0
+              //             : parseInt(e.target.value, 10),
+              //     })
+              // }
               />
             </div>
             <div className="mb-4">
@@ -286,29 +279,29 @@ const OrderModel = ({
               <input
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded"
-                value={newOrder.subtotal}
-                onChange={(e) =>
-                  setNewOrder({
-                    ...newOrder,
-                    subtotal:
-                      +selectedItem?.price! * +newOrder.quantity! -
-                      (+newOrder.discount! || 0),
-                  })
-                }
+                // value={newOrder.subtotal}
+                // onChange={(e) =>
+                //     setNewOrder({
+                //         ...newOrder,
+                //         subtotal:
+                //             +selectedItem?.price! * +newOrder.quantity! -
+                //             (+newOrder.discount! || 0),
+                //     })
+                // }
                 disabled
               />
             </div>
             <button
               type="button"
               className="bg-green-500 text-white font-bold py-2 px-4 rounded"
-              onClick={handleAddOrderClick}
+            // onClick={handleAddOrderClick}
             >
               Add Order
             </button>
             <button
               type="button"
               className="bg-gray-500 text-white font-bold py-2 px-4 rounded ml-2"
-              onClick={() => setShowAddOrderModal(false)}
+            // onClick={() => setShowAddOrderModal(false)}
             >
               Cancel
             </button>
