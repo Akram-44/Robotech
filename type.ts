@@ -114,9 +114,8 @@ export interface SidebarItem {
   icon: any;
 }
 
-
-export interface OrderType {
-  courses: CourseType[],
-  products: ProductType[],
-  services: ServiceType[]
+export type OrderType = {
+  products: ProductType[];
+  courses: CourseType[];
+  services: ServiceType[];
 }
