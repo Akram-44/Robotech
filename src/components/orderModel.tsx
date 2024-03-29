@@ -94,10 +94,10 @@ const CustomSelect = ({
   );
 };
 
-const OrderModel = () => {
+const OrderModel = ({setShowOrderModel}) => {
   const [selectedItem, setSelectedItem] = useState<
     CourseType | ProductType | null
-  >(null);
+  >();
   const [products, setproducts] = useState<any>([]);
 
   useEffect(() => {
@@ -301,7 +301,7 @@ const OrderModel = () => {
             <button
               type="button"
               className="bg-gray-500 text-white font-bold py-2 px-4 rounded ml-2"
-            // onClick={() => setShowAddOrderModal(false)}
+            onClick={() => setShowOrderModel(false)}
             >
               Cancel
             </button>

@@ -117,7 +117,7 @@ const CustomerPage = () => {
           <div className="h-[400px] border overflow-auto rounded mt-3 p-3">{tabs[currentTab].content}</div>
         </div>
       )}
-      {showOrderModel && <OrderModel />}
+      {showOrderModel && <OrderModel {...{setShowOrderModel}}/>}
       {showBill && <Bill id={currentBillId} setBillData={setBillData} setShowBill={setShowBill} transactionData={billData} />}
     </div>
   );
