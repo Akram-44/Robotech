@@ -209,7 +209,7 @@ const OrderModel = () => {
 
   return (
     <>
-      <div className=" inset-0 bg-black bg-opacity-50 z-100 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-100 flex items-center justify-center">
         <div className="bg-white min-w-[40rem] p-8 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Add Order</h2>
           <form>
