@@ -31,14 +31,10 @@ const Orders = ({ customerId }) => {
             [category]: !prevState[category]
         }));
     };
-    const placeOrder = (category) => {
-        console.log(category)
-    }
     const renderItems = (items, title, imageField, noItemsMessage, category) => (
         <div>
             <h2 onClick={() => toggleCollapse(category)} className='flex items-center mt-2 font-bold mb-1 text-blue-600 text-base cursor-pointer'><span>{title.toUpperCase()}</span> <ChevronRight className="ml-2" size={16} /></h2>
             {collapse[category] && <>
-                <Plus onClick={() => placeOrder(category)} className="ml-auto bg-blue-500 text-white rounded-full p-1 my-2" />
                 <ul>
                     {items ? (
                         items.map(item => (
@@ -57,7 +53,7 @@ const Orders = ({ customerId }) => {
         </div>
     );
 
-    return <div className="h-[400px] border overflow-auto rounded mt-3 p-3">
+    return <div className="h-[95%]">
 
         {ordersList ? (
             <div className="mt-2">
