@@ -9,8 +9,7 @@ import { Printer, Trash } from "lucide-react";
 import Bill from "@/components/Bill";
 import { ProductType } from "../../../../type";
 import supabase from "@/supabase/config";
-import { getCustomerCourses } from "@/supabase/getCustomerCourses";
-import { Cousine } from "next/font/google";
+import { getCustomerOrders } from "@/supabase/getCustomerOrders";
 const CustomerPage = () => {
   const router = useRouter();
   const searchPar = useSearchParams();
@@ -80,14 +79,13 @@ const CustomerPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const courses = await getCustomerCourses("bba739b3-09e0-4986-a57d-d04d44813f61");
-        console.log(courses);
+        const courses = await getCustomerOrders(customerId, 'service_id', 'services_duplicate');
+        return courses
       } catch (error) {
         console.error('Error fetching customer courses:', error);
       }
     }
-  
-    fetchData();
+    fetchData().then(data => console.log(data));
   }, []);
 
   const setBill = () => {
@@ -105,7 +103,7 @@ const CustomerPage = () => {
         const { data: purchases, error } = await supabase
           .from('customer_purchures')
           .select('*')
-          .eq('customer_id', `bba739b3-09e0-4986-a57d-d04d44813f61`);
+          .eq('customer_id', customerId);
 
 
         console.log(purchases)

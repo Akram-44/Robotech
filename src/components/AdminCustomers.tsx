@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { Check, X, Plus, TrashIcon, Edit, PhoneCall, User } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-import { v4 as uuidv4 } from "uuid";
 import Link from "next/link";
 import supabase from "@/supabase/config";
 const AdminCustomers = () => {
-  const [jsonArray, setJsonArray] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [editedItemId, setEditedItemId] = useState<number | null>(null);
+  const [editedItemId, setEditedItemId] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState("");
 
   interface CustomerType {
@@ -16,9 +15,7 @@ const AdminCustomers = () => {
     phone: string;
     address: string;
     faculty: string;
-    age: number;
-    total_purchase_transactions: number;
-    transactions: {};
+    age: number
   }
 
   const [editedItem, setEditedItem] = useState<CustomerType>({
@@ -27,25 +24,21 @@ const AdminCustomers = () => {
     address: "",
     faculty: "",
     age: 0,
-    total_purchase_transactions: 0,
-    transactions: {
-      products: [],
-      courses: [],
-      printServices: [],
-    },
+
+
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await supabase.from("customers").select();
-        setJsonArray(data!);
+        const { data } = await supabase.from("customers_duplicate").select("*");
+        return (data!);
       } catch (error) {
         setError((error as Error).message);
       }
     };
 
-    fetchData();
+    fetchData().then((data) => setCustomers(data!));
   }, []);
 
   const handleAddItemClick = () => {
@@ -55,41 +48,37 @@ const AdminCustomers = () => {
       phone: "",
       age: 0,
       address: "",
-      faculty: "",
-      total_purchase_transactions: 0,
-      transactions: {
-        products: [],
-        courses: [],
-        printServices: [],
-      },
+      faculty: ""
     });
     setError(null); // Reset error state
     setSearchTerm("");
   };
 
-  const handleEditClick = (id: number) => {
+  const handleEditClick = (id: string) => {
+    setEditedItemId(id);
+
     // Find the index of the course with the specified ID
-    const index = jsonArray.findIndex((item) => item.id === id);
+    const index = customers.findIndex((item) => item.id === id);
     // Set the editIndex state to the found index
     setEditIndex(index);
     // Set the editedItem state to the corresponding course object
-    setEditedItem({ ...jsonArray[index] });
+    setEditedItem({ ...customers[index] });
   };
 
-  const handleRemoveItem = async (id: number) => {
+  const handleRemoveItem = async (id: string) => {
     let confirmDel = window.confirm(
       "Deleting this customer will also remove associated data such as transactions, products, courses, and print services purchased, impacting the stats page."
     );
     if (confirmDel) {
       try {
         // Remove the course from jsonArray
-        const updatedArray = jsonArray.filter((item) => item.id !== id);
+        const updatedArray = customers.filter((item) => item.id !== id);
 
         // Update jsonArray state with the filtered array
-        setJsonArray(updatedArray);
+        setCustomers(updatedArray);
 
         // Perform deletion operation in Supabase based on the course ID
-        await supabase.from("customers").delete().eq("id", id);
+        await supabase.from("customers_duplicate").delete().eq("id", id);
 
         // Show success toast message
         toast.success(`Item removed successfully`);
@@ -104,7 +93,7 @@ const AdminCustomers = () => {
     try {
       // Check for empty fields
       if (!editedItem.fullName || !editedItem.phone || !editedItem.age) {
-        toast.error("All fields are required");
+        toast.error("Name,Phone, and age fields are required");
         return;
       }
 
@@ -113,29 +102,31 @@ const AdminCustomers = () => {
         if (editIndex === -1) {
           // Add a new course
           const { data, error } = await supabase
-            .from("customers")
+            .from("customers_duplicate")
             .insert([editedItem])
             .select();
           setEditedItemId(data![0].id);
           if (error) {
             throw error;
           }
-          updatedCustomers = [...jsonArray, editedItem]; // Add a check for empty data array
+          updatedCustomers = [...customers, editedItem]; // Add a check for empty data array
         } else {
+
           // Update an existing course
           const { data, error } = await supabase
-            .from("customers")
+            .from("customers_duplicate")
             .update(editedItem)
             .eq("id", editedItemId);
           if (error) {
             throw error;
           }
-          updatedCustomers = jsonArray.map((course) =>
+          console.log(editedItemId)
+          updatedCustomers = customers.map((course) =>
             course.id === editedItemId ? editedItem : course
           );
         }
 
-        setJsonArray(updatedCustomers); // Update the state variable
+        setCustomers(updatedCustomers); // Update the state variable
         setEditIndex(null);
         toast.success("Customer Added/Updated successfully");
       }
@@ -160,7 +151,7 @@ const AdminCustomers = () => {
     <div
       className={`min-h-[400px] lg:p-3 w-full bottom-0 left-0 lg:relative overflow-hidden mt-5`}
     >
-      {!jsonArray && <h2 className="font-bold mb-4">Current Customer data:</h2>}
+      {!customers && <h2 className="font-bold mb-4">Current Customer data:</h2>}
 
       <div className="mb-5 flex flex-col lg:flex-row items-center justify-between">
         <input
@@ -181,9 +172,9 @@ const AdminCustomers = () => {
           </button>
         </div>
       </div>
-      {searchTerm.length >= 3 && jsonArray.length !== 0 ? (
+      {searchTerm.length >= 3 && customers.length !== 0 ? (
         <div className={"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"}>
-          {jsonArray
+          {customers
             .filter((item) => {
               const fullName = item.fullName.toLowerCase();
               const phone = item.phone.toLowerCase();
@@ -199,7 +190,8 @@ const AdminCustomers = () => {
                 <Link
                   key={index}
                   href={{
-                    pathname: `admin/id_${item?.id || editedItemId}`,
+                    // pathname: `admin/id_${item?.id || editedItemId}`,
+                    pathname: `admin/customers`,
                     query: {
                       id: item?.id || editedItemId,
                     },
@@ -226,13 +218,13 @@ const AdminCustomers = () => {
                 <div className="flex justify-end">
                   <button
                     className="flex gap-1 items-center  bg-blue-100 py-1 px-2 rounded text-blue-500 hover:text-blue-600 mr-2 transition-colors duration-300"
-                    onClick={() => handleEditClick(+item.id)}
+                    onClick={() => handleEditClick(item.id)}
                   >
                     <Edit size={17} /> Edit
                   </button>
                   <button
                     className="flex gap-1 items-center bg-red-100 py-1 px-2 rounded text-red-500 hover:text-red-600 transition-colors duration-300"
-                    onClick={() => handleRemoveItem(+item.id)}
+                    onClick={() => handleRemoveItem(item.id)}
                   >
                     <TrashIcon size={17} /> Remove
                   </button>
