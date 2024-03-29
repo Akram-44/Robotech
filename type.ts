@@ -16,7 +16,7 @@ export interface ProductType {
   unit: string;
 }
 
-interface ServiceType {
+export interface CourseType {
   created_at: string;
   poster: string;
   video: string;
@@ -42,30 +42,47 @@ interface ServiceType {
   id: string;
 }
 
-
-
-export interface CourseType {
-  enrollmentLink: string;
+export interface ServiceType {
   id: string;
-  poster: string;
-  video: string;
-  rate: number;
   title: string;
   price: number;
   previousPrice: number;
-  studentsEnrolled: number;
   description: string;
-  enrollmentOpen: string;
-  instructor: string;
-  instructor_info: string;
-  duration: number;
-  category: string;
-  startDateTime: string;
-  level: string;
-  index: string;
-  last_updated: string;
-  more_details: string;
+  image1: string;
+  image2: string;
+  image3: string;
+  brand: string;
+  quantity: number;
+  externalLink: string;
+  unit: string;
+  wholesalePrice: number;
+  variations: string;
+  created_at: string; // Assuming this property is also needed
 }
+
+
+// export interface CourseType {
+//   enrollmentLink: string;
+//   id: string;
+//   poster: string;
+//   video: string;
+//   rate: number;
+//   title: string;
+//   price: number;
+//   previousPrice: number;
+//   studentsEnrolled: number;
+//   description: string;
+//   enrollmentOpen: string;
+//   instructor: string;
+//   instructor_info: string;
+//   duration: number;
+//   category: string;
+//   startDateTime: string;
+//   level: string;
+//   index: string;
+//   last_updated: string;
+//   more_details: string;
+// }
 
 
 
