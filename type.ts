@@ -16,6 +16,34 @@ export interface ProductType {
   unit: string;
 }
 
+interface ServiceType {
+  created_at: string;
+  poster: string;
+  video: string;
+  price: number;
+  previousPrice: number;
+  studentsEnrolled: number;
+  title: string;
+  rate: number;
+  description: string;
+  enrollmentOpen: string;
+  enrollmentLink: string;
+  instructor: string;
+  instructor_info: string;
+  duration: number;
+  category: string;
+  startDateTime: string;
+  level: string;
+  index: string;
+  last_updated: string;
+  more_details: string;
+  quantity: number;
+  startDate: string;
+  id: string;
+}
+
+
+
 export interface CourseType {
   enrollmentLink: string;
   id: string;
@@ -67,4 +95,11 @@ export interface SidebarItem {
   label: string;
   content: any;
   icon: any;
+}
+
+
+export interface OrderType {
+  courses: CourseType[],
+  products: ProductType[],
+  services: ServiceType[]
 }

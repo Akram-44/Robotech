@@ -9,9 +9,9 @@ import { Printer, Trash } from "lucide-react";
 import Bill from "@/components/Bill";
 import { ProductType } from "../../../../type";
 import supabase from "@/supabase/config";
-import { getCustomerOrders } from "@/supabase/getCustomerOrders";
+import Orders from "@/components/customer/orders";
 const CustomerPage = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const searchPar = useSearchParams();
   const customerId = searchPar?.get("id");
   // const data = searchPar?.get("data");
@@ -23,6 +23,7 @@ const CustomerPage = () => {
   const [currentBillId, setCurrentBillId] = useState(0);
   const [billData, setBillData] = useState<any>([]);
   const [showBill, setShowBill] = useState(false);
+  const [showOrders, setShowOrders] = useState(false);
   const [currentBill, setCurrentBill] = useState<BillType>();
   interface BillType {
     data: ProductType[],
@@ -79,7 +80,7 @@ const CustomerPage = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const {data} = await supabase.from('customers_duplicate').select("*").eq('id', customerId).single()
+        const { data } = await supabase.from('customers_duplicate').select("*").eq('id', customerId).single()
         return data!
       } catch (error) {
         console.error('Error fetching customer courses:', error);
@@ -87,17 +88,7 @@ const CustomerPage = () => {
     }
     fetchData().then(data => setCustomerData(data!));
   }, []);
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const courses = await getCustomerOrders(customerId, 'service_id', 'services_duplicate');
-        return courses
-      } catch (error) {
-        console.error('Error fetching customer courses:', error);
-      }
-    }
-    fetchData().then(data => (data));
-  }, []);
+
   const setBill = () => {
     const confirm = window.confirm('Sure To Reset Bill ?');
     if (!confirm) return;
@@ -197,8 +188,11 @@ const CustomerPage = () => {
               </p>
             </div>
           </div>
-
-          <div className="mt-8">
+          <div className="">
+            <button className="py-2 px-10 rounded font-bold text-gray-900 bg-blue-500 text-white" onClick={() => setShowOrders(!showOrders)}>Orders</button>
+            {showOrders && <Orders {...{ customerId }} />}
+          </div>
+          {/* <div className="mt-8">
             <h2 className="text-3xl font-semibold mb-8">Create a Bill</h2>
 
             <section className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
@@ -239,7 +233,7 @@ const CustomerPage = () => {
 
               </div>
             </section>
-          </div>
+          </div> */}
         </div>
       )}
       {showBill && <Bill id={currentBillId} setBillData={setBillData} setShowBill={setShowBill} transactionData={billData} />}
